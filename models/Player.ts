@@ -1,6 +1,6 @@
 class Player {
-  private _id: number = 0;
-  private _name: string = '';
+  protected _id: number = 0;
+  protected _name: string = '';
 
   constructor (name: string) {
     this._name = name;

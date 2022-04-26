@@ -9,15 +9,14 @@ class X01Turn extends Turn {
   }
 }
 
-class X01Player {
-  private _player: Player;
+class X01Player extends Player {
   private _score: number; // The validated score
   private _tmpScore: number|null = null; // The temp score (reached current turn)
   private _currentTurn: X01Turn|null = null;
   private _turns: X01Turn[] = [];
 
   constructor (playerName: string, initialScore: number) {
-    this._player = new Player(playerName);
+    super(playerName);
     this._score = initialScore;
   }
 
@@ -56,10 +55,6 @@ class X01Player {
     return false;
   }
 
-  get player (): Player {
-    return this._player;
-  }
-
   get score (): number|null {
     return this._tmpScore !== null
       ? this._tmpScore
@@ -90,9 +85,9 @@ class X01Player {
 
 class GameX01 extends Game {
   private _startScore: number = 501;
-  private _players: X01Player[] = [];
+  protected _players: X01Player[] = [];
 
-  constructor (id: number, startScore: number, playerNames: string[]) {
+  constructor (id: number, playerNames: string[], startScore: number) {
     super(id);
 
     this._startScore = startScore;

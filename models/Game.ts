@@ -1,6 +1,9 @@
+import { Player } from './Player';
+
 class Game {
-  private _id: number = 0;
-  private _currentPlayerIndex: number|null = null;
+  protected _id: number = 0;
+  protected _currentPlayerIndex: number|null = null;
+  protected _players: Player[] = [];
 
   constructor (id: number) {
     this._id = id;
@@ -16,6 +19,18 @@ class Game {
 
   set currentPlayerIndex (currentPlayerIndex: number|null) {
     this._currentPlayerIndex = currentPlayerIndex;
+  }
+
+  get players (): Player[] {
+    return this._players;
+  }
+
+  set players (players: Player[]) {
+    this._players = players;
+  }
+
+  setNextPlayerToPlay (): void {
+    this.currentPlayerIndex = ((this.currentPlayerIndex || 0) + 1) % this._players.length;
   }
 }
 

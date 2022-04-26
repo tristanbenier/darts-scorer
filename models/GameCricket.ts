@@ -1,5 +1,3 @@
-import Vue from 'vue';
-
 import { Cell } from './Cell';
 import { Game } from './Game';
 import { Player } from './Player';
@@ -17,20 +15,11 @@ const CRICKET_SCORE_CELL_KEYS = [
 
 class CrickerTurn extends Turn {}
 
-class CricketPlayer {
-  private _player: Player;
+class CricketPlayer extends Player {
   private _scores: { [cellKey: string]: number } = {};
   private _points: number = 0;
   private _currentTurn: CrickerTurn|null = null;
   private _turns: CrickerTurn[] = [];
-
-  constructor (playerName: string) {
-    this._player = new Player(playerName);
-  }
-
-  get player (): Player {
-    return this._player;
-  }
 
   /**
    * @param cell The cell played
@@ -53,7 +42,7 @@ class CricketPlayer {
     ;
 
     const cellScore = (this._scores[cellScoreKey] || 0) + nbTouchesToAdd;
-    Vue.set(this._scores, cellScoreKey, Math.min(cellScore, 3));
+    this._scores[cellScoreKey] = Math.min(cellScore, 3);
 
     // Compute the points to potentially add to other players
     if (cellScore > 3) {
@@ -102,7 +91,7 @@ class CricketPlayer {
 }
 
 class GameCricket extends Game {
-  private _players: CricketPlayer[] = [];
+  declare protected _players: CricketPlayer[];
 
   constructor (id: number, playerNames: string[]) {
     super(id);
@@ -127,8 +116,9 @@ class GameCricket extends Game {
     if (pointsToAdd) {
       this.updateOtherPlayerScores(cell, pointsToAdd);
     }
+
     if (isPlayerTurnComplete) {
-      this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this._players.length;
+      this.setNextPlayerToPlay();
     }
 
     return isPlayerTurnComplete;
@@ -142,10 +132,6 @@ class GameCricket extends Game {
 
       player.addPointsForCell(cell, pointsToAdd);
     });
-  }
-
-  get players (): CricketPlayer[] {
-    return this._players;
   }
 }
 
