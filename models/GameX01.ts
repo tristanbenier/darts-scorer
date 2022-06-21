@@ -7,6 +7,15 @@ class X01Turn extends Turn {
   get points (): number {
     return this.cells.reduce((acc, cell) => acc + cell.points, 0);
   }
+
+  clone (): X01Turn {
+    const clone = new X01Turn();
+
+    clone.cells = this.cells;
+    clone.maxCells = this.maxCells;
+
+    return clone;
+  }
 }
 
 class X01Player extends Player {
@@ -81,6 +90,18 @@ class X01Player extends Player {
     // TODO: https://dartsdojo.com/dart-out-charts/
     return [];
   }
+
+  clone (): X01Player {
+    const clone = new X01Player(this.name, this.score);
+
+    clone.name = this.name;
+    clone._score = this._score;
+    clone._currentTurn = this.currentTurn?.clone() || null;
+    clone._tmpScore = this._tmpScore;
+    clone._turns = this.turns.map((turn: X01Turn) => turn.clone());
+
+    return clone;
+  }
 }
 
 class GameX01 extends Game {
@@ -126,6 +147,15 @@ class GameX01 extends Game {
 
   get players (): X01Player[] {
     return this._players;
+  }
+
+  clone (): Game {
+    const clone = new GameX01(this.id, [], this.startScore);
+
+    clone._players = this.players.map((player: X01Player) => player.clone());
+    clone.currentPlayerIndex = this.currentPlayerIndex;
+
+    return clone;
   }
 }
 

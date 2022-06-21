@@ -21,6 +21,10 @@ class Player {
   set name (name: string) {
     this._name = name;
   }
+
+  clone (): Player {
+    throw new Error('Not implemented');
+  }
 }
 
 export { Player };

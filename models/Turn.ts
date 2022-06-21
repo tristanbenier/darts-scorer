@@ -10,6 +10,14 @@ class Turn {
     }
   }
 
+  get maxCells (): number {
+    return this._maxCells;
+  }
+
+  set maxCells (maxCells: number) {
+    this._maxCells = maxCells;
+  }
+
   get cells (): Cell[] {
     return this._cells;
   }
@@ -20,6 +28,10 @@ class Turn {
 
   get isComplete (): boolean {
     return this._cells.length === this._maxCells;
+  }
+
+  clone (): Turn {
+    throw new Error('Not implemented');
   }
 }
 

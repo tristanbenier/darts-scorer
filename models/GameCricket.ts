@@ -13,13 +13,22 @@ const CRICKET_SCORE_CELL_KEYS = [
   '15', '16', '17', '18', '19', '20', 'bull',
 ];
 
-class CrickerTurn extends Turn {}
+class CricketTurn extends Turn {
+  clone (): CricketTurn {
+    const clone = new CricketTurn();
+
+    clone.cells = this.cells;
+    clone.maxCells = this.maxCells;
+
+    return clone;
+  }
+}
 
 class CricketPlayer extends Player {
   private _scores: { [cellKey: string]: number } = {};
   private _points: number = 0;
-  private _currentTurn: CrickerTurn|null = null;
-  private _turns: CrickerTurn[] = [];
+  private _currentTurn: CricketTurn|null = null;
+  private _turns: CricketTurn[] = [];
 
   /**
    * @param cell The cell played
@@ -29,7 +38,7 @@ class CricketPlayer extends Player {
     let pointsToAdd = 0;
 
     if (this._currentTurn === null) {
-      this._currentTurn = new CrickerTurn();
+      this._currentTurn = new CricketTurn();
     }
 
     const cellScoreKey = cell.key.replace('d-', '').replace('t-', '');
@@ -88,6 +97,18 @@ class CricketPlayer extends Player {
       .every(cellKey => this.hasCompletedCell(cellKey))
     ;
   }
+
+  clone (): CricketPlayer {
+    const clone = new CricketPlayer(this.name);
+
+    clone.name = this.name;
+    clone._scores = this._scores;
+    clone._points = this._points;
+    clone._currentTurn = this._currentTurn?.clone() || null;
+    clone._turns = this._turns.map((turn: CricketTurn) => turn.clone());
+
+    return clone;
+  }
 }
 
 class GameCricket extends Game {
@@ -132,6 +153,15 @@ class GameCricket extends Game {
 
       player.addPointsForCell(cell, pointsToAdd);
     });
+  }
+
+  clone (): GameCricket {
+    const clone = new GameCricket(this.id, []);
+
+    clone.players = this.players.map((player: Player) => player.clone());
+    clone.currentPlayerIndex = this.currentPlayerIndex;
+
+    return clone;
   }
 }
 

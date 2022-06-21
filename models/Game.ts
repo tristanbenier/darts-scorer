@@ -32,6 +32,10 @@ class Game {
   setNextPlayerToPlay (): void {
     this.currentPlayerIndex = ((this.currentPlayerIndex || 0) + 1) % this._players.length;
   }
+
+  clone () {
+    throw new Error('Not implemented');
+  }
 }
 
 export { Game };
