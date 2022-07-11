@@ -25,10 +25,10 @@ class CricketTurn extends Turn {
 }
 
 class CricketPlayer extends Player {
+  declare protected _turns: CricketTurn[];
   private _scores: { [cellKey: string]: number } = {};
   private _points: number = 0;
   private _currentTurn: CricketTurn|null = null;
-  private _turns: CricketTurn[] = [];
 
   /**
    * @param cell The cell played

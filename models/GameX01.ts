@@ -16,13 +16,22 @@ class X01Turn extends Turn {
 
     return clone;
   }
+
+  static createFromStoredValue (storedValue: any): X01Turn {
+    const turn = new X01Turn();
+
+    turn.maxCells = storedValue._maxCells;
+    turn.cells = (storedValue._cells || []).map(turnValue => Cell.createFromStoredValue(turnValue));
+
+    return turn;
+  }
 }
 
 class X01Player extends Player {
+  declare protected _turns: X01Turn[];
   private _score: number; // The validated score
   private _tmpScore: number|null = null; // The temp score (reached current turn)
   private _currentTurn: X01Turn|null = null;
-  private _turns: X01Turn[] = [];
 
   constructor (playerName: string, initialScore: number) {
     super(playerName);
@@ -71,12 +80,20 @@ class X01Player extends Player {
     ;
   }
 
+  set score (score: number) {
+    this._score = score;
+  }
+
   get currentTurn (): X01Turn|null {
     return this._currentTurn;
   }
 
   get turns (): X01Turn[] {
     return [...this._turns].reverse();
+  }
+
+  set turns (turns: X01Turn[]) {
+    this._turns = turns;
   }
 
   get averageTurnPoints () {
@@ -102,11 +119,22 @@ class X01Player extends Player {
 
     return clone;
   }
+
+  static createFromStoredValue (storedValue: any): X01Player {
+    const player = new X01Player(storedValue._name, storedValue._score);
+
+    const turns = (storedValue._turns || []).map(storedTurn => X01Turn.createFromStoredValue(storedTurn));
+    player.turns = turns;
+
+    player.score = storedValue._score;
+
+    return player;
+  }
 }
 
 class GameX01 extends Game {
+  declare protected _players: X01Player[];
   private _startScore: number = 501;
-  protected _players: X01Player[] = [];
 
   constructor (id: number, playerNames: string[], startScore: number) {
     super(id);
@@ -149,6 +177,10 @@ class GameX01 extends Game {
     return this._players;
   }
 
+  set players (players: X01Player[]) {
+    this._players = players;
+  }
+
   clone (): Game {
     const clone = new GameX01(this.id, [], this.startScore);
 
@@ -156,6 +188,17 @@ class GameX01 extends Game {
     clone.currentPlayerIndex = this.currentPlayerIndex;
 
     return clone;
+  }
+
+  static createFromStoredValue (storedValue: any): GameX01 {
+    const game = new GameX01(storedValue._id, [], storedValue._startScore);
+
+    const players = (storedValue._players || []).map((storedPlayer: any) => X01Player.createFromStoredValue(storedPlayer));
+    game.players = players;
+
+    game.currentPlayerIndex = storedValue._currentPlayerIndex;
+
+    return game;
   }
 }
 

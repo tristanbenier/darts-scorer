@@ -73,6 +73,10 @@ class Cell {
 
     return new Cell(key, name, points);
   }
+
+  static createFromStoredValue (storedValue: any): Cell {
+    return new Cell(storedValue._key, storedValue._name, storedValue._points);
+  }
 }
 
 export { Cell };

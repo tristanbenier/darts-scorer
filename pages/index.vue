@@ -73,14 +73,11 @@ const gameStartHandler = () => {
     game = new GameX01(1, playerNames.value, parseInt(selectedGame.value));
     gameStore.init(game);
     router.push({ name: 'x01' });
-    console.log('x01');
   } else if (selectedGame.value === 'Cricket') {
     game = new GameCricket(1, playerNames.value);
     gameStore.init(game);
     router.push({ name: 'cricket' });
-    console.log('cricket');
   }
-  console.log('hey');
 };
 
 // this.$store.dispatch('game/startNewGame', { game });

@@ -21,11 +21,11 @@ class Game {
     this._currentPlayerIndex = currentPlayerIndex;
   }
 
-  get players (): Player[] {
+  public get players (): Player[] {
     return this._players;
   }
 
-  set players (players: Player[]) {
+  public set players (players: Player[]) {
     this._players = players;
   }
 
@@ -35,6 +35,10 @@ class Game {
 
   clone () {
     throw new Error('Not implemented');
+  }
+
+  get NAME (): string {
+    return this.constructor.name;
   }
 }
 

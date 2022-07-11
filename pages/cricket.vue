@@ -1,4 +1,6 @@
 <template>
+  <!-- https://image.winudf.com/v2/image1/Y29tLmhpZy5EYXJ0c1Njb3JlclBST19zY3JlZW5fNV8xNjQwNjM0MTc4XzAyOQ/screen-5.jpg?fakeurl=1 -->
+  <!-- https://image.winudf.com/v2/image1/Y29tLmhpZy5EYXJ0c1Njb3JlclBST19zY3JlZW5fM18xNjQwNjM0MTc4XzAzNw/screen-3.jpg?fakeurl=1 -->
   <div class="game-x01">
     <div class="row">
       <div class="col">

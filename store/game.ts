@@ -3,6 +3,19 @@ import { defineStore } from 'pinia';
 import { Cell } from '@/models/Cell';
 import { Game } from '@/models/Game';
 
+const saveGame = (game: Game) => {
+  const { $storage } = useNuxtApp();
+
+  const gameName = game.NAME;
+  $storage.set(gameName, game);
+};
+
+const getSavedGame = (gameName: string) => {
+  const { $storage } = useNuxtApp();
+
+  return $storage.get(gameName);
+};
+
 type CellState = {
   currentGame: Game;
   savedGames: Game[];
@@ -21,13 +34,22 @@ const actions: { [key: string]: Function } = {
     this.currentGame.currentPlayerIndex = 0;
     const gameClone = this.currentGame.clone();
     this.savedGames.push(gameClone);
+
+    saveGame(this.currentGame);
   },
+  loadGameFromStorage (gameName: string) {
+    const game = getSavedGame(gameName);
+
+    return game;
+  },
+
   currentPlayerPlay (cell: Cell) {
     const gameClone = this.currentGame.clone();
     this.savedGames.push(gameClone);
     this.actions++;
 
     this.currentGame.currentPlayerPlay(cell);
+    saveGame(this.currentGame);
   },
   cancelLastAction () {
     if (!this.savedGames.length) {

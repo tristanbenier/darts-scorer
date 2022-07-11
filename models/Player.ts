@@ -1,6 +1,9 @@
+import { Turn } from './Turn';
+
 class Player {
   protected _id: number = 0;
   protected _name: string = '';
+  protected _turns: Turn[] = [];
 
   constructor (name: string) {
     this._name = name;
@@ -20,6 +23,10 @@ class Player {
 
   set name (name: string) {
     this._name = name;
+  }
+
+  set turns (turns: Turn[]) {
+    this._turns = turns;
   }
 
   clone (): Player {
