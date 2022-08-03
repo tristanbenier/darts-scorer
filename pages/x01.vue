@@ -81,7 +81,7 @@ onBeforeMount(() => {
 
   const gameName = 'GameX01';
   const storedGame = gameStore.loadGameFromStorage(gameName);
-  if(storedGame) {
+  if (storedGame) {
     const game = GameX01.createFromStoredValue(storedGame);
     gameStore.currentGame = game;
   }
@@ -90,9 +90,21 @@ onBeforeMount(() => {
 });
 
 const dartsHitHandler = (cell) => {
+  if (game.value.isFinished) {
+    return;
+  }
+
   selectedPlayer.value = currentPlayer.value;
   gameStore.currentPlayerPlay(cell);
   selectedPlayer.value = currentPlayer.value;
+};
+
+const restartClickHandler = () => {
+  if (!window.confirm('Créer une nouvelle partie ?')) {
+    return;
+  }
+  const newGame = new GameX01(game.value.id + 1, game.value.playerNames, game.value.startScore);
+  gameStore.init(newGame);
 };
 
 const cancelClickHandler = () => {

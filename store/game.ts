@@ -33,14 +33,12 @@ const actions: { [key: string]: Function } = {
     this.currentGame = game;
     this.currentGame.currentPlayerIndex = 0;
     const gameClone = this.currentGame.clone();
-    this.savedGames.push(gameClone);
+    this.savedGames = [gameClone];
 
     saveGame(this.currentGame);
   },
   loadGameFromStorage (gameName: string) {
-    const game = getSavedGame(gameName);
-
-    return game;
+    return getSavedGame(gameName);
   },
 
   currentPlayerPlay (cell: Cell) {
@@ -63,9 +61,8 @@ const actions: { [key: string]: Function } = {
     const currentPlayerIndex = this.currentGame.currentPlayerIndex;
     const lastSavedGamePlayerIndex = this.savedGames[this.savedGames.length - 1]?.currentPlayerIndex;
     if (currentPlayerIndex === lastSavedGamePlayerIndex) {
-      this.cancelLastAction();
+      return this.cancelLastAction();
     }
-
   },
 };
 

@@ -67,7 +67,23 @@ const newPlayerAddHandler = () => {
   newPlayerName.value = '';
 };
 
-const gameStartHandler = () => {
+const gameReloadClickHandler = () => {
+  if (!selectedGame.value) {
+    return;
+  }
+
+  if (selectedGame.value === '301' || selectedGame.value === '501') {
+    router.push({ name: 'x01' });
+  } else if (selectedGame.value === 'Cricket') {
+    router.push({ name: 'cricket' });
+  }
+};
+
+const gameStartClickHandler = () => {
+  if (!playerNames.value.length || !selectedGame.value) {
+    return;
+  }
+
   let game;
   if (selectedGame.value === '301' || selectedGame.value === '501') {
     game = new GameX01(1, playerNames.value, parseInt(selectedGame.value));
@@ -79,12 +95,4 @@ const gameStartHandler = () => {
     router.push({ name: 'cricket' });
   }
 };
-
-// this.$store.dispatch('game/startNewGame', { game });
 </script>
-
-<style scoped>
-.game-x01 .player.active {
-  background-color: #ffcc00;
-}
-</style>

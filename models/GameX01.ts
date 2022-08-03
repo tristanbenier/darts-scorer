@@ -96,7 +96,30 @@ class X01Player extends Player {
     this._turns = turns;
   }
 
-  get averageTurnPoints () {
+  get lastTurn (): X01Turn|null
+  {
+    return this._turns[this._turns.length - 1] || null;
+  }
+
+  get currentOrLastTurn (): X01Turn|null
+  {
+    return this.currentTurn || this.lastTurn;
+  }
+
+  get maxTurnsScore (): number|null
+  {
+    if (!this._turns.length) {
+      return null;
+    }
+
+    return [...this._turns]
+      .map((turn: X01Turn) => turn.points)
+      .sort((turn1Points: number, turn2Points: number) => turn1Points - turn2Points)
+      .pop()
+    ;
+  }
+
+  get averageTurnsPoints () {
     if (this._turns.length === 0) {
       return 0;
     }
@@ -157,7 +180,13 @@ class GameX01 extends Game {
     }
 
     if (this._players[this.currentPlayerIndex].play(cell)) {
-      this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this._players.length;
+      let currentPlayerChanges = 0;
+      let currentPlayerScore = 0;
+      do {
+        this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this._players.length;
+        currentPlayerScore = this.players[this.currentPlayerIndex].score;
+        currentPlayerChanges++;
+      } while (currentPlayerScore === 0 && currentPlayerChanges < this.players.length)
 
       return true;
     }
@@ -179,6 +208,10 @@ class GameX01 extends Game {
 
   set players (players: X01Player[]) {
     this._players = players;
+  }
+
+  get isFinished (): boolean {
+    return this.players.every((player: X01Player) => player.score === 0);
   }
 
   clone (): Game {

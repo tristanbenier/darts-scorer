@@ -22,6 +22,15 @@ class CricketTurn extends Turn {
 
     return clone;
   }
+
+  static createFromStoredValue (storedValue: any): CricketTurn {
+    const turn = new CricketTurn();
+
+    turn.maxCells = storedValue._maxCells;
+    turn.cells = (storedValue._cells || []).map(turnValue => Cell.createFromStoredValue(turnValue));
+
+    return turn;
+  }
 }
 
 class CricketPlayer extends Player {
@@ -43,19 +52,21 @@ class CricketPlayer extends Player {
 
     const cellScoreKey = cell.key.replace('d-', '').replace('t-', '');
 
-    const nbTouchesToAdd = cell.isDouble
-      ? 2
-      : cell.isTriple
-        ? 3
-        : 1
-    ;
+    let nbTouchesToAdd: number = 1;
+    if (cell.isDouble) {
+      nbTouchesToAdd = 2;
+    } else if (cell.isTriple) {
+      nbTouchesToAdd = 3;
+    }
 
     const cellScore = (this._scores[cellScoreKey] || 0) + nbTouchesToAdd;
-    this._scores[cellScoreKey] = Math.min(cellScore, 3);
+    if (CRICKET_CELL_KEYS.includes(cellScoreKey)) {
+      this._scores[cellScoreKey] = Math.min(cellScore, 3);
 
-    // Compute the points to potentially add to other players
-    if (cellScore > 3) {
-      pointsToAdd = (cellScore - 3) * cell.simpleCellPoints;
+      // Compute the points to potentially add to other players
+      if (cellScore > 3) {
+        pointsToAdd = (cellScore - 3) * cell.simpleCellPoints;
+      }
     }
 
     this._currentTurn.addCell(cell);
@@ -92,22 +103,47 @@ class CricketPlayer extends Player {
     return this._points;
   }
 
+  set points (points: number) {
+    this._points = points;
+  }
+
   get hasCompletedAllCells (): boolean {
     return CRICKET_SCORE_CELL_KEYS
       .every(cellKey => this.hasCompletedCell(cellKey))
     ;
   }
 
+  get scores (): { [key: string]: number } {
+    return this._scores;
+  }
+
+  set scores (scores: { [key: string]: number }) {
+    this._scores = scores;
+  }
+
   clone (): CricketPlayer {
     const clone = new CricketPlayer(this.name);
 
     clone.name = this.name;
-    clone._scores = this._scores;
+    clone._scores = { ...this._scores };
     clone._points = this._points;
     clone._currentTurn = this._currentTurn?.clone() || null;
     clone._turns = this._turns.map((turn: CricketTurn) => turn.clone());
 
     return clone;
+  }
+
+  static createFromStoredValue (storedValue: any): CricketPlayer {
+    const player = new CricketPlayer(storedValue._name);
+
+    const turns = (storedValue._turns || []).map(storedTurn => CricketTurn.createFromStoredValue(storedTurn));
+    player.turns = turns;
+
+    player.scores = { ...storedValue._scores };
+
+    player.points = storedValue._points;
+
+    return player;
   }
 }
 
@@ -158,10 +194,22 @@ class GameCricket extends Game {
   clone (): GameCricket {
     const clone = new GameCricket(this.id, []);
 
-    clone.players = this.players.map((player: Player) => player.clone());
+    clone.players = this.players.map((player: CricketPlayer) => player.clone());
     clone.currentPlayerIndex = this.currentPlayerIndex;
 
     return clone;
+  }
+
+  static createFromStoredValue (storedValue: any): GameCricket {
+
+    const game = new GameCricket(storedValue._id, []);
+
+    const players = (storedValue._players || []).map((storedPlayer: any) => CricketPlayer.createFromStoredValue(storedPlayer));
+    game.players = players;
+
+    game.currentPlayerIndex = storedValue._currentPlayerIndex;
+
+    return game;
   }
 }
 

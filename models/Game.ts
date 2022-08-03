@@ -25,6 +25,10 @@ class Game {
     return this._players;
   }
 
+  public get playerNames (): string[] {
+    return this._players.map((player: Player) => player.name);
+  }
+
   public set players (players: Player[]) {
     this._players = players;
   }

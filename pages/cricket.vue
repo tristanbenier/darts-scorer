@@ -61,19 +61,25 @@ const currentPlayerIndex = computed(() => game.value && game.value.currentPlayer
 
 onBeforeMount(() => {
   cellsStore.initCells();
-});
 
-onMounted(() => {
-  initGame();
+  const gameName = 'GameCricket';
+  const storedGame = gameStore.loadGameFromStorage(gameName);
+  if (storedGame) {
+    const game = GameCricket.createFromStoredValue(storedGame);
+    gameStore.currentGame = game;
+  }
 });
-
-const initGame = () => {
-  const players = ['Mathou', 'Nenouf', 'Tritri'];
-  gameStore.init(new GameCricket(1, players));
-};
 
 const dartsHitHandler = (cell) => {
   gameStore.currentPlayerPlay(cell);
+};
+
+const restartClickHandler = () => {
+  if (!window.confirm('Créer une nouvelle partie ?')) {
+    return;
+  }
+  const newGame = new GameCricket(game.value.id + 1, game.value.playerNames);
+  gameStore.init(newGame);
 };
 
 const cancelClickHandler = () => {
