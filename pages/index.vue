@@ -1,42 +1,46 @@
 <template>
   <div class="game-selector">
-    <div class="container">
-      <h1>Configuration de la partie</h1>
-      <div class="card p-3">
-        <div v-for="gameName in GAME_NAMES" :key="`game-${gameName}`" class="row">
-          <div class="col">
-            <h2>{{ gameName }}</h2>
-          </div>
-          <div class="col">
-            <button
-              class="btn"
-              :class="gameName === selectedGame ? 'btn-success': 'btn-primary'"
-              @click="gameSelectionHandler(gameName)"
-            >Sélectionner</button>
-          </div>
+    <div class="container pt-5">
+      <h1 class="mb-5">Configuration de la partie</h1>
+
+      <div class="row">
+        <div class="col text-center">
+          <a
+            v-for="gameName in GAME_NAMES"
+            :key="`game-${gameName}`"
+            class="button"
+            :class="{ green: gameName === selectedGame }"
+            @click.prevent="gameSelectionHandler(gameName)"
+          >{{ gameName }}</a>
         </div>
 
-        <div class="row">
-          <div class="col">
-            <input
-              v-model="newPlayerName"
-              class="form-control"
-            />
-            <button
-              class="btn btn-primary"
-              @click="newPlayerAddHandler"
-            >Ajouter</button>
-          </div>
-          <div class="col">
-            <div v-for="(playerName, i) in playerNames" :key="`player-${i}`">
-              {{ playerName }}
+        <div class="col">
+          <form @submit.prevent="newPlayerAddHandler">
+            <div class="row">
+              <div class="col">
+                <input v-model="newPlayerName" class="w-100" />
+              </div>
+
+              <div class="col-auto">
+                <button
+                  type="submit"
+                  class="button"
+                >Ajouter</button>
+              </div>
             </div>
+          </form>
+        </div>
+
+        <div class="col">
+          <div v-for="(playerName, i) in playerNames" :key="`player-${i}`">
+            &bullet; {{ playerName }}
           </div>
         </div>
 
-        <div class="row mt-4">
+        <div class="row mt-5">
           <div class="col text-center">
-            <button class="btn btn-primary" @click="gameStartHandler">Créer la partie</button>
+            <button class="button me-2" @click="gameReloadClickHandler">Recharger une partie existante</button>
+            <button class="button green" @click="gameStartClickHandler">Créer la partie</button>
           </div>
         </div>
       </div>

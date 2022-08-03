@@ -1,8 +1,14 @@
 <template>
-  <div class="turn">
-    <div v-if="points !== null" class="points me-5">{{ points }}</div>
-    <div v-for="(cell, i) in cells" :key="`cell-${i}`" class="cell mx-1">
-      {{ cell.name }}
+  <div class="turn row">
+    <div class="col-8">
+      <div class="row">
+        <div v-for="(cell, i) in cells" :key="`cell-${i}`" class="col-4">
+          <div class="cell w-100">{{ cell.name }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-4 text-center">
+      <span v-if="points !== null" class="points">{{ points }}</span>
     </div>
   </div>
 </template>
@@ -16,22 +22,17 @@ defineProps({
 
 <style scoped>
 .turn {
-  display: inline-block;
-  padding: 0.5em 1em;
-  background-color: #efefef;
-  border-radius: 0.5em;
+  background-color: #2e343a;
+  border-radius: 0.125em;
+  color: #fff;
 }
 .turn .points {
-  display: inline-block;
-  width: 50px;
   text-align: center;
 }
 .turn .cell {
-  display: inline-block;
-  width: 40px;
   font-size: 0.8em;
-  padding: 0.25em 0.5em;
-  background-color: #ccc;
+  padding: 1em 0;
+  background-color: #3b4046;
   border-radius: 0.5em;
   text-align: center;
 }
